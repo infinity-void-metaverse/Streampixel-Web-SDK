@@ -28,13 +28,17 @@ const { appStream, pixelStreaming } = StreamPixelApplication({
 });
 🔄 Key Parameters
 
-Param	Type	Description
-AutoConnect	boolean	Connects automatically on load
-region	string	Project region (e.g., "Asia-pacific")
-resX / resY	number	Desired resolution
-afktimeout	number	Time (ms) before idle session is terminated
-mouseInput, keyBoardInput, touchInput	boolean	Input options
-appId	string	Your projectId
+
+Param | Type | Description
+AutoConnect | boolean | Connects automatically on load
+region | string | Project region (e.g., "Asia-pacific")
+resX / resY | number | Desired resolution
+afktimeout | number | Time (ms) before idle session is terminated
+mouseInput | boolean | Input options for mouse
+keyBoardInput | boolean | Input options for keyboard
+touchInput | boolean | Input options for touch
+appId | string | Your projectId
+
 🧩 2. Connection Handlers
 You can register WebRTC and video lifecycle events on the appStream object to respond to key connection states.
 
