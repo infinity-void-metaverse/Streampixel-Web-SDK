@@ -33701,7 +33701,7 @@ function queueHandler(callback) {
   }
 }
 async function getProjectDetails(projectId) {
-  console.log("PROJECTID:", projectId);
+  console.log("PROJECTID :", projectId);
   try {
     const response = await fetch(`https://api.streampixel.io/pixelStripeApi/projects/streamAuth/${projectId}`);
     if (!response.ok) {
