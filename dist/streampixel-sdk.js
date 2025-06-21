@@ -33701,27 +33701,31 @@ function queueHandler(callback) {
   }
 }
 async function getProjectDetails(projectId) {
+  console.log("PROJECTID:", projectId);
   try {
     const response = await fetch(`https://api.streampixel.io/pixelStripeApi/projects/streamAuth/${projectId}`);
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
     const projectData = await response.json();
+    console.log("projectData:", projectData);
     if (window.location.hostname === "localhost") {
       return projectData;
     }
     const validUrls = projectData.validPathUrl;
-    if (Array.isArray(validUrls) && validUrls.length > 0) {
-      const currentOrigin = window.location.origin;
-      const isValid = validUrls.some((url) => {
-        if (url.includes("*")) {
-          return currentOrigin.includes(url.split("*")[1]);
-        }
-        return currentOrigin.includes(url);
-      });
-      if (isValid) {
-        return projectData;
+    if (!Array.isArray(validUrls) || validUrls.length === 0) {
+      return projectData;
+    }
+    const currentOrigin = window.location.origin;
+    const isValid = validUrls.some((url) => {
+      if (url.includes("*")) {
+        const part = url.split("*")[1];
+        return part && currentOrigin.includes(part);
       }
+      return currentOrigin.includes(url);
+    });
+    if (isValid) {
+      return projectData;
     }
     return null;
   } catch (error) {
@@ -33734,6 +33738,7 @@ async function StreamPixelApplication(settings) {
     console.warn(" StreamPixelApplication called more than once \u2014 skipping.");
     return {};
   }
+  console.log("SETTINGS:", settings);
   _sdkInitialized = true;
   const projectData = await getProjectDetails(settings.appId);
   if (projectData != null) {
@@ -33953,9 +33958,6 @@ async function StreamPixelApplication(settings) {
         const [key, value] = text.split(":").map((item) => item.trim());
         if (key && value && key.toLowerCase() !== "players") {
           stats[key] = value;
-          if (key == "Video resolution") {
-            videoResolution = value;
-          }
         }
       });
       return stats;
