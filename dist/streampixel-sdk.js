@@ -27560,7 +27560,7 @@ var require_lib_pixelstreamingfrontend_ui = __commonJS({
         CommonLog(e2, t2) {
           let n2 = `[${e2}] - ${t2}`;
           this.context.includeStack && (n2 += `
-Stack: ${this.GetStackTrace()}`), console.log(n2);
+Stack: ${this.GetStackTrace()}`);
         }
         GetStackTrace() {
           const e2 = new Error();
