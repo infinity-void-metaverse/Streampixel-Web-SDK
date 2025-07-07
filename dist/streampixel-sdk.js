@@ -56635,6 +56635,14 @@ var StreamPixelVoiceChat = class {
       const text = new TextDecoder().decode(payload);
       this._onMessage({ from: participant.identity, text });
     });
+    this.room.on(RoomEvent.ParticipantConnected, () => {
+      console.log(" Participant connected");
+      setTimeout(() => this._emitParticipants(), 3e3);
+    });
+    this.room.on(RoomEvent.ParticipantDisconnected, () => {
+      console.log(" Participant disconnected");
+      setTimeout(() => this._emitParticipants(), 3e3);
+    });
     await this.room.connect("wss://metaverseinfinityvoidio-4om2t9s4.livekit.cloud", token);
     if (this.voiceChat === true) {
       await this.room.localParticipant.setMicrophoneEnabled(true);
