@@ -56616,6 +56616,7 @@ var StreamPixelVoiceChat = class {
     };
     this._onParticipants = () => {
     };
+    this.remoteParticipants = /* @__PURE__ */ new Map();
   }
   async getToken() {
     const url = `https://api.streampixel.io/pixelStripeApi/liveKit/getToken?roomName=${encodeURIComponent(this.roomName)}&userName=${encodeURIComponent(this.userName)}`;
@@ -56635,12 +56636,14 @@ var StreamPixelVoiceChat = class {
       const text = new TextDecoder().decode(payload);
       this._onMessage({ from: participant.identity, text });
     });
-    this.room.on(RoomEvent.ParticipantConnected, () => {
+    this.room.on(RoomEvent.ParticipantConnected, (participant) => {
       console.log(" Participant connected");
+      this.remoteParticipants.set(participant.identity, participant);
       setTimeout(() => this._emitParticipants(), 3e3);
     });
-    this.room.on(RoomEvent.ParticipantDisconnected, () => {
+    this.room.on(RoomEvent.ParticipantDisconnected, (participant) => {
       console.log(" Participant disconnected");
+      this.remoteParticipants.delete(participant.identity);
       setTimeout(() => this._emitParticipants(), 3e3);
     });
     await this.room.connect("wss://metaverseinfinityvoidio-4om2t9s4.livekit.cloud", token);
@@ -56708,9 +56711,8 @@ var StreamPixelVoiceChat = class {
   _emitParticipants() {
     if (!this.room || this.room.state === "disconnected") return;
     const local = this.room.localParticipant;
-    if (!local) return;
-    const remote = Array.from(this.room.participants?.values() || []);
-    console.log(remote);
+    const remote = Array.from(this.remoteParticipants.values());
+    console.log("Remote participants (via map):", remote.map((p) => p.identity));
     this._onParticipants({
       localParticipant: local.identity,
       remoteParticipants: remote.map((p) => p.identity)
