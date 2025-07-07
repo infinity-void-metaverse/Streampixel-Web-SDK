@@ -56652,6 +56652,9 @@ var StreamPixelVoiceChat = class {
     if (this.voiceChat === true) {
       await this.room.localParticipant.setMicrophoneEnabled(true);
     }
+    for (const [identity, participant] of (this.room?.participants ?? /* @__PURE__ */ new Map()).entries()) {
+      this.remoteParticipants.set(identity, participant);
+    }
     console.log("Joined room:", this.room.name);
     setTimeout(() => this._emitParticipants(), 3e3);
   }
@@ -56712,10 +56715,6 @@ var StreamPixelVoiceChat = class {
   }
   _emitParticipants() {
     if (!this.room || this.room.state === "disconnected") return;
-    const participants = this.room?.participants || /* @__PURE__ */ new Map();
-    for (const [identity, participant] of participants.entries()) {
-      this.remoteParticipants.set(identity, participant);
-    }
     const local = this.room.localParticipant;
     const remote = Array.from(this.remoteParticipants.values());
     console.log("Remote participants (via map):", remote.map((p) => p.identity));
