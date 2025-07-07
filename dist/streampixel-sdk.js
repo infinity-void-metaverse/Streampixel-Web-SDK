@@ -56652,9 +56652,6 @@ var StreamPixelVoiceChat = class {
     if (this.voiceChat === true) {
       await this.room.localParticipant.setMicrophoneEnabled(true);
     }
-    for (const [identity, participant] of (this.room?.participants ?? /* @__PURE__ */ new Map()).entries()) {
-      this.remoteParticipants.set(identity, participant);
-    }
     console.log("Joined room:", this.room.name);
     setTimeout(() => this._emitParticipants(), 3e3);
   }
