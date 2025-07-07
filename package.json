@@ -17,7 +17,9 @@
     "keywords": [],
     "dependencies": {
       "@epicgames-ps/lib-pixelstreamingfrontend-ue5.5": "^0.1.4",
-      "@epicgames-ps/lib-pixelstreamingfrontend-ui-ue5.5": "^0.1.0"
+      "@epicgames-ps/lib-pixelstreamingfrontend-ui-ue5.5": "^0.1.0",
+       "livekit-client": "^2.15.0",
+       "mixpanel-browser": "^2.64.0"
     },
     "devDependencies": {
       "esbuild": "^0.25.2",
