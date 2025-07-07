@@ -56627,10 +56627,12 @@ var StreamPixelVoiceChat = class {
   }
   async join() {
     const token = await this.getToken();
-    this.room = new Room({ dynacast: true, autoSubscribe: false });
-    this.room.on(RoomEvent.TrackSubscribed, (track, pub, p) => {
-      console.log("Track subscribed from:", p.identity);
-      this._emitParticipants();
+    this.room = new Room({ dynacast: true, autoSubscribe: true });
+    this.room.on(RoomEvent.TrackSubscribed, (track, pub, participant) => {
+      if (track.kind === "audio") {
+        const el = track.attach();
+        el.play().catch((e2) => console.error("play() failed", e2));
+      }
     });
     this.room.on(RoomEvent.DataReceived, (payload, participant) => {
       const text = new TextDecoder().decode(payload);
@@ -56649,6 +56651,9 @@ var StreamPixelVoiceChat = class {
     await this.room.connect("wss://metaverseinfinityvoidio-4om2t9s4.livekit.cloud", token);
     if (this.voiceChat === true) {
       await this.room.localParticipant.setMicrophoneEnabled(true);
+    }
+    for (const [identity, participant] of this.room.participants) {
+      this.remoteParticipants.set(identity, participant);
     }
     console.log("Joined room:", this.room.name);
     setTimeout(() => this._emitParticipants(), 3e3);
