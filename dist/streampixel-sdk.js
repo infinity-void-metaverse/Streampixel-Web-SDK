@@ -56671,7 +56671,6 @@ var StreamPixelVoiceChat = class {
     }
   }
   async muteAllRemote() {
-    if (!this.room || !this.room.participants) return;
     const participants = Array.from(this.room.remoteParticipants.values());
     console.log("participants:", participants);
     for (const participant of participants) {
@@ -56683,7 +56682,6 @@ var StreamPixelVoiceChat = class {
     }
   }
   async unmuteAllRemote() {
-    if (!this.room || !this.room.participants) return;
     const participants = Array.from(this.room.remoteParticipants.values());
     console.log("participants:", participants);
     for (const participant of participants) {
