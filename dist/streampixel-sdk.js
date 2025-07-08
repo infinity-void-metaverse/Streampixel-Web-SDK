@@ -56719,8 +56719,8 @@ var StreamPixelVoiceChat = class {
     const local = this.room.localParticipant;
     const remote = Array.from(this.room.remoteParticipants.values());
     this._onParticipants({
-      localParticipant: local.identity,
-      remoteParticipants: remote.map((p) => p.identity)
+      localParticipant: local,
+      remoteParticipants: remote.map((p) => p)
     });
   }
   onMessage(callback) {
