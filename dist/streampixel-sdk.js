@@ -56616,7 +56616,6 @@ var StreamPixelVoiceChat = class {
     };
     this._onParticipants = () => {
     };
-    this.remoteParticipants = /* @__PURE__ */ new Map();
   }
   async getToken() {
     const url = `https://api.streampixel.io/pixelStripeApi/liveKit/getToken?roomName=${encodeURIComponent(this.roomName)}&userName=${encodeURIComponent(this.userName)}`;
@@ -56639,20 +56638,15 @@ var StreamPixelVoiceChat = class {
       this._onMessage({ from: participant.identity, text });
     });
     this.room.on(RoomEvent.ParticipantConnected, (participant) => {
-      console.log(" Participant connected");
-      this.remoteParticipants.set(participant.identity, participant);
       setTimeout(() => this._emitParticipants(), 3e3);
     });
     this.room.on(RoomEvent.ParticipantDisconnected, (participant) => {
-      console.log(" Participant disconnected");
-      this.remoteParticipants.delete(participant.identity);
       setTimeout(() => this._emitParticipants(), 3e3);
     });
     await this.room.connect("wss://metaverseinfinityvoidio-4om2t9s4.livekit.cloud", token);
     if (this.voiceChat === true) {
       await this.room.localParticipant.setMicrophoneEnabled(true);
     }
-    console.log("Joined room:", this.room.name);
     setTimeout(() => this._emitParticipants(), 3e3);
   }
   async leave() {
@@ -56677,14 +56671,18 @@ var StreamPixelVoiceChat = class {
     }
   }
   async muteAllRemote() {
-    for (const [, participant] of this.room.participants) {
+    const participants = this.room.participants;
+    for (const identity in participants) {
+      const participant = participants[identity];
       for (const [, pub] of participant.audioTracks) {
         if (pub.audioTrack) pub.audioTrack.stop();
       }
     }
   }
   async unmuteAllRemote() {
-    for (const [, participant] of this.room.participants) {
+    const participants = this.room.participants;
+    for (const identity in participants) {
+      const participant = participants[identity];
       for (const [, pub] of participant.audioTracks) {
         if (pub.audioTrack) pub.audioTrack.play();
       }
@@ -56705,7 +56703,9 @@ var StreamPixelVoiceChat = class {
     }
   }
   getRemoteParticipant(identity) {
-    for (const [, p] of this.room.participants) {
+    const participants = this.room.participants;
+    for (const id in participants) {
+      const p = participants[id];
       if (p.identity === identity) return p;
     }
     return null;
@@ -56713,8 +56713,7 @@ var StreamPixelVoiceChat = class {
   _emitParticipants() {
     if (!this.room || this.room.state === "disconnected") return;
     const local = this.room.localParticipant;
-    const remote = Array.from(this.remoteParticipants.values());
-    console.log("Remote participants (via map):", remote.map((p) => p.identity));
+    const remote = Array.from(this.room.remoteParticipants.values());
     this._onParticipants({
       localParticipant: local.identity,
       remoteParticipants: remote.map((p) => p.identity)
