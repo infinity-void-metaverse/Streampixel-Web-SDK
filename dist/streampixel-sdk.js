@@ -56671,44 +56671,50 @@ var StreamPixelVoiceChat = class {
     }
   }
   async muteAllRemote() {
-    const participants = this.room.participants;
-    for (const identity in participants) {
-      const participant = participants[identity];
-      for (const [, pub] of participant.audioTracks) {
-        if (pub.audioTrack) pub.audioTrack.stop();
+    if (!this.room || !this.room.participants) return;
+    const participants = Array.from(this.room.remoteParticipants.values());
+    console.log("participants:", participants);
+    for (const participant of participants) {
+      for (const pub of participant.audioTrackPublications.values()) {
+        pub.handleMuted();
+        pub.setAllowed(false);
+        pub.setEnabled(false);
       }
     }
   }
   async unmuteAllRemote() {
-    const participants = this.room.participants;
-    for (const identity in participants) {
-      const participant = participants[identity];
-      for (const [, pub] of participant.audioTracks) {
-        if (pub.audioTrack) pub.audioTrack.play();
+    if (!this.room || !this.room.participants) return;
+    const participants = Array.from(this.room.remoteParticipants.values());
+    console.log("participants:", participants);
+    for (const participant of participants) {
+      for (const pub of participant.audioTrackPublications.values()) {
+        pub.handleUnmuted();
+        pub.setAllowed(true);
+        pub.setEnabled(true);
       }
     }
   }
   async muteSelected(identity) {
-    const participant = this.getRemoteParticipant(identity);
+    const remote = Array.from(this.room.remoteParticipants.values());
+    console.log("remote:", remote);
+    const participant = Array.from(this.room.remoteParticipants.values()).find((p) => p.identity === identity);
+    console.log("participant:", participant);
     if (!participant) return;
-    for (const [, pub] of participant.audioTracks) {
-      if (pub.audioTrack) pub.audioTrack.stop();
+    for (const pub of participant.audioTrackPublications.values()) {
+      pub.handleMuted();
+      pub.setAllowed(false);
+      pub.setEnabled(false);
     }
   }
   async unmuteSelected(identity) {
-    const participant = this.getRemoteParticipant(identity);
+    const participant = Array.from(this.room.remoteParticipants.values()).find((p) => p.identity === identity);
+    console.log("participant:", participant);
     if (!participant) return;
-    for (const [, pub] of participant.audioTracks) {
-      if (pub.audioTrack) pub.audioTrack.play();
+    for (const pub of participant.audioTrackPublications.values()) {
+      pub.handleUnmuted();
+      pub.setAllowed(true);
+      pub.setEnabled(true);
     }
-  }
-  getRemoteParticipant(identity) {
-    const participants = this.room.participants;
-    for (const id in participants) {
-      const p = participants[id];
-      if (p.identity === identity) return p;
-    }
-    return null;
   }
   _emitParticipants() {
     if (!this.room || this.room.state === "disconnected") return;
