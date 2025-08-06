@@ -174,3 +174,125 @@ pixelStreaming.disconnect();
 For integration support, documentation, and updates, contact the StreamPixel team or visit our [official support page](https://streampixel.io).
 
 ---
+
+##  NEW
+
+📘 StreamPixel Voice Chat SDK Documentation
+This document explains how to integrate and use the StreamPixel Voice Chat SDK within your application.
+
+📦 SDK Import
+js
+Copy
+Edit
+import { StreamPixelVoiceChat } from 'streampixelsdk';
+🚀 Initialization
+Create an instance of the voice chat SDK:
+
+js
+Copy
+Edit
+const chatSdk = new StreamPixelVoiceChat(roomName, userName, voiceChat, avatar, micStart);
+🔧 Parameters
+Parameter	Type	Description
+roomName	string	Name of the chat room
+userName	string	User's display name
+voiceChat	boolean	Enable or disable voice chat
+avatar	string	URL to user’s avatar image
+micStart	boolean	Whether the mic is on by default on room join
+
+📥 Event Listeners
+1. 💬 Message Listener
+js
+Copy
+Edit
+chatSdk.onMessage((msg) => {
+  // Handle incoming messages
+});
+2. 👥 Participant Updates
+Triggered when a participant joins or updates:
+
+js
+Copy
+Edit
+chatSdk.onParticipantUpdate((list) => {
+  // Handle new participant or update
+});
+🔗 Join & Leave Room
+✅ Join a Room
+js
+Copy
+Edit
+await chatSdk.join();
+❌ Leave a Room
+js
+Copy
+Edit
+await chatSdk.leave();
+💬 Messaging
+📤 Send a Message
+js
+Copy
+Edit
+const sendMessage = () => {
+  chatSdk && chatSdk.sendMessage(input.trim());
+};
+🎙️ Microphone Controls
+🔄 Toggle Microphone (Local)
+js
+Copy
+Edit
+const toggleMic = (participantId) => {
+  if (participantId === localUserName) {
+    chatSdk.toggleMic();
+    setLocalMic(!localMic);
+  }
+};
+🔇 Mute All Remote Participants
+js
+Copy
+Edit
+const muteAllRemote = async () => {
+  chatSdk.muteAllRemote();
+};
+🔊 Unmute All Remote Participants
+js
+Copy
+Edit
+const unmuteAllRemote = () => {
+  chatSdk.unmuteAllRemote();
+};
+🔇 Mute Specific Participant
+js
+Copy
+Edit
+const muteSelected = async (identity) => {
+  chatSdk.muteSelected(identity);
+};
+🔊 Unmute Specific Participant
+js
+Copy
+Edit
+const unmuteSelected = async (identity) => {
+  chatSdk.unmuteSelected(identity);
+};
+🖱️ UI Controls – Mouse Hover Toggle (Live Stream)
+Used to enable or disable the hovering mouse control on the live stream.
+
+✅ Enable Mouse Hover
+js
+Copy
+Edit
+const enableMouseHover = () => {
+  if (UIControlApp) {
+    UIControlApp.toggleHoveringMouse(true);
+  }
+};
+❌ Disable Mouse Hover
+js
+Copy
+Edit
+const disableMouseHover = () => {
+  if (UIControlApp) {
+    UIControlApp.toggleHoveringMouse(false);
+  }
+};
