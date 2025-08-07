@@ -144,6 +144,156 @@ Displays WebRTC debug metrics like frame rate, bandwidth, and latency.
 
 ---
 
+## 🖱️ 7. Hovering Mouse Visibility at Runtime
+
+Enable or disable hovering mouse control (for live stream overlays):
+
+```js
+UIControlApp.toggleHoveringMouse(true);  // enable
+UIControlApp.toggleHoveringMouse(false); // disable
+```
+
+---
+
+# 📘 Voice Chat Integration Guide
+
+Our SDK also enables real-time voice chat, messaging, and participant control within your application.
+
+---
+
+## 📦 1. Installation
+
+Install and import the SDK:
+
+```js
+import { StreamPixelVoiceChat } from 'streampixelsdk';
+```
+
+---
+
+## 🚀 2. Initialization
+
+Create an instance of the voice chat SDK:
+
+```js
+const chatSdk = new StreamPixelVoiceChat(
+  roomName,   // string: Name of the chat room
+  userName,   // string: User’s display name
+  voiceChat,  // boolean: Enable or disable voice chat
+  avatar,     // string: URL to user’s avatar image
+  micStart    // boolean: Mic on by default when joining the room
+);
+```
+
+### 🔧 Key Parameters
+
+| Param       | Type      | Description                             |
+| ----------- | --------- | --------------------------------------- |
+| `roomName`  | `string`  | Chat room identifier                    |
+| `userName`  | `string`  | Display name for the user               |
+| `voiceChat` | `boolean` | Enable or disable voice functionality   |
+| `avatar`    | `string`  | URL to the user’s avatar image          |
+| `micStart`  | `boolean` | Start with mic on (true) or off (false) |
+
+---
+
+## 🔗 3. Connection Handlers
+
+Monitor connection lifecycle events to update your UI:
+
+```js
+chatSdk.onConnect = () => console.log("Connected to voice chat");
+chatSdk.onDisconnect = () => console.log("Disconnected");
+chatSdk.onError = (err) => console.error("Connection error:", err);
+```
+
+| Event          | Description                          |
+| -------------- | ------------------------------------ |
+| `onConnect`    | Fired when connection is established |
+| `onDisconnect` | Fired when disconnected or left      |
+| `onError`      | Fired on connection errors           |
+
+---
+
+## 💬 4. Messaging & Events
+
+### 📥 Receiving Messages
+
+```js
+chatSdk.onMessage((msg) => {
+  console.log("Incoming message:", msg);
+});
+```
+
+### 📤 Sending Messages
+
+```js
+const sendMessage = (text) => {
+  chatSdk.sendMessage(text);
+};
+```
+
+### 👥 Participant Updates
+
+```js
+chatSdk.onParticipantUpdate((participants) => {
+  console.log("Participants:", participants);
+});
+```
+
+---
+
+## 🎙️ 5. Microphone Controls
+
+### 🔄 Toggle Local Mic
+
+```js
+chatSdk.toggleMic(); // Mutes/unmutes your mic
+```
+
+### 🔇 Mute/Unmute Remote
+
+```js
+chatSdk.muteAllRemote();   // Mute everyone else
+chatSdk.unmuteAllRemote(); // Unmute everyone else
+```
+
+### 🔇 Mute Specific Participant
+
+```js
+chatSdk.muteSelected(participantId);
+```
+
+### 🔊 Unmute Specific Participant
+
+```js
+chatSdk.unmuteSelected(participantId);
+```
+
+---
+
+## 🛑 7. Disconnect & Cleanup
+
+### 🔌 Leave Room
+
+```js
+await chatSdk.leave();
+```
+
+### 🔒 Cleanup Resources
+
+```js
+chatSdk.disconnect();
+```
+
+---
+
+## 📞 8. Support
+
+Need help? Reach out to our team:
+📧 [support@streampixel.io](mailto:support@streampixel.io)
+
+
 ## 🧩 Recommended Usage Pattern in React
 
 ```js
@@ -173,126 +323,3 @@ pixelStreaming.disconnect();
 
 For integration support, documentation, and updates, contact the StreamPixel team or visit our [official support page](https://streampixel.io).
 
----
-
-##  NEW
-
-📘 StreamPixel Voice Chat SDK Documentation
-This document explains how to integrate and use the StreamPixel Voice Chat SDK within your application.
-
-📦 SDK Import
-js
-Copy
-Edit
-import { StreamPixelVoiceChat } from 'streampixelsdk';
-🚀 Initialization
-Create an instance of the voice chat SDK:
-
-js
-Copy
-Edit
-const chatSdk = new StreamPixelVoiceChat(roomName, userName, voiceChat, avatar, micStart);
-🔧 Parameters
-Parameter	Type	Description
-roomName	string	Name of the chat room
-userName	string	User's display name
-voiceChat	boolean	Enable or disable voice chat
-avatar	string	URL to user’s avatar image
-micStart	boolean	Whether the mic is on by default on room join
-
-📥 Event Listeners
-1. 💬 Message Listener
-js
-Copy
-Edit
-chatSdk.onMessage((msg) => {
-  // Handle incoming messages
-});
-2. 👥 Participant Updates
-Triggered when a participant joins or updates:
-
-js
-Copy
-Edit
-chatSdk.onParticipantUpdate((list) => {
-  // Handle new participant or update
-});
-🔗 Join & Leave Room
-✅ Join a Room
-js
-Copy
-Edit
-await chatSdk.join();
-❌ Leave a Room
-js
-Copy
-Edit
-await chatSdk.leave();
-💬 Messaging
-📤 Send a Message
-js
-Copy
-Edit
-const sendMessage = () => {
-  chatSdk && chatSdk.sendMessage(input.trim());
-};
-🎙️ Microphone Controls
-🔄 Toggle Microphone (Local)
-js
-Copy
-Edit
-const toggleMic = (participantId) => {
-  if (participantId === localUserName) {
-    chatSdk.toggleMic();
-    setLocalMic(!localMic);
-  }
-};
-🔇 Mute All Remote Participants
-js
-Copy
-Edit
-const muteAllRemote = async () => {
-  chatSdk.muteAllRemote();
-};
-🔊 Unmute All Remote Participants
-js
-Copy
-Edit
-const unmuteAllRemote = () => {
-  chatSdk.unmuteAllRemote();
-};
-🔇 Mute Specific Participant
-js
-Copy
-Edit
-const muteSelected = async (identity) => {
-  chatSdk.muteSelected(identity);
-};
-🔊 Unmute Specific Participant
-js
-Copy
-Edit
-const unmuteSelected = async (identity) => {
-  chatSdk.unmuteSelected(identity);
-};
-🖱️ UI Controls – Mouse Hover Toggle (Live Stream)
-Used to enable or disable the hovering mouse control on the live stream.
-
-✅ Enable Mouse Hover
-js
-Copy
-Edit
-const enableMouseHover = () => {
-  if (UIControlApp) {
-    UIControlApp.toggleHoveringMouse(true);
-  }
-};
-❌ Disable Mouse Hover
-js
-Copy
-Edit
-const disableMouseHover = () => {
-  if (UIControlApp) {
-    UIControlApp.toggleHoveringMouse(false);
-  }
-};
